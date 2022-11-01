@@ -1,0 +1,25 @@
+.feed {
+  width: 60%;
+  padding: 2rem 0;
+  overflow-y: auto;
+}
+
+.feed::-webkit-scrollbar-track {
+  visibility: hidden;
+}
+
+.feed::-webkit-scrollbar-thumb {
+  visibility: hidden;
+}
+
+.feed:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+.feed:active::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+.feed:focus::-webkit-scrollbar-thumb {
+  visibility: visible;
+}

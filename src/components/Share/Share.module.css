@@ -1,0 +1,102 @@
+.share {
+  background-color: #fff;
+  width: 75%;
+  border: none;
+  border-radius: 1rem;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+}
+
+.share-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.share-top img {
+  width: 5.5rem;
+  border-radius: 50%;
+}
+
+.share-top textarea {
+  font-size: 2rem;
+  width: 90%;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.share-bot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+.share-bot button {
+  font-size: 2.2rem;
+  font-weight: 500;
+  padding: 0.5rem 2rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #1199f6;
+  color: #fff;
+  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+  transition: 200ms opacity ease;
+  cursor: pointer;
+}
+
+.share-bot button:hover {
+  opacity: 0.8;
+}
+
+.share-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+}
+
+.share-option img {
+  width: 4rem;
+}
+
+input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.share-img {
+  position: relative;
+  width: 100%;
+  height: max-content;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.share-img img:first-child {
+  width: 3rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.share-img img:first-child:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.share-img img:last-child {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

@@ -1,0 +1,27 @@
+.page {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  position: relative;
+  grid-template-columns: 50% 50%;
+}
+
+.banner {
+  position: absolute;
+  top: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  width: 60rem;
+  height: max-content;
+  grid-column: 1 / span 1;
+  font-size: 6rem;
+  font-weight: 700;
+  color: #1875f0;
+}
+
+.banner p {
+  margin-top: 1rem;
+  font-weight: 400;
+  font-size: 3.5rem;
+  color: #3c3c3c;
+}

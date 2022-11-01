@@ -1,0 +1,6 @@
+.container {
+  width: 100vw;
+  /* minus nav bar height */
+  height: calc(100vh - 7rem);
+  display: flex;
+}

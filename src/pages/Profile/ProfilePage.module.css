@@ -1,0 +1,64 @@
+.profile {
+  width: 100vw;
+  height: calc(100vh - 7rem);
+  display: flex;
+}
+
+.profile-right {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.profile-cover {
+  position: relative;
+  height: 35rem;
+}
+
+.profile-cover img:first-child {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-cover img:last-child {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 15rem;
+  height: 15rem;
+  border-radius: 50%;
+  border: 0.5rem solid white;
+  cursor: pointer;
+  transition: 200ms ease filter;
+}
+
+.profile-cover img:last-child:hover {
+  filter: brightness(0.85);
+}
+
+.profile-info {
+  /* Half the image height */
+  margin-top: calc(15rem / 2);
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-info h4 {
+  font-size: 3rem;
+  margin: 0;
+}
+
+.profile-info span {
+  font-size: 2rem;
+}
+
+.profile-right-bottom {
+  display: flex;
+}

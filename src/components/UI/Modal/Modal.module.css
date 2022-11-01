@@ -1,0 +1,69 @@
+.modal {
+  width: 40rem;
+  height: 20rem;
+  border: none;
+  border-radius: 6px;
+  background-color: white;
+  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 500;
+  padding: 0 1rem;
+  height: 25%;
+}
+
+.header img {
+  width: 3.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0.3rem;
+}
+
+.header img:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.header p {
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 0 1.5rem;
+  height: 45%;
+}
+
+.content p {
+  margin: 0;
+}
+
+.action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 15%;
+  padding: 0 2rem;
+}
+
+.action button {
+  border: none;
+  border-radius: 6px;
+  padding: 1rem 3rem;
+  color: #fff;
+  background-color: #1875f0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.action button:hover {
+  opacity: 0.8;
+}

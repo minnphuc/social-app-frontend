@@ -1,0 +1,111 @@
+.post {
+  background-color: #fff;
+  width: 75%;
+  border: none;
+  border-radius: 1rem;
+  margin: 3rem auto;
+  padding: 1rem 2rem;
+  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+}
+
+/* TOP */
+
+.post-top {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-bottom: -1rem;
+}
+
+.post-top img {
+  width: 3rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.post-top img:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.post-info {
+  width: 95%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-info img {
+  width: 3.5rem;
+}
+
+.post-info p:nth-child(2) {
+  font-weight: 700;
+}
+
+/* CENTER */
+
+.post-center {
+  font-size: 2rem;
+  height: max-content;
+}
+
+.post-center p {
+  margin-bottom: 1.5rem;
+  text-align: justify;
+}
+
+.post-center img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* BOTTOM */
+
+.post-bot {
+  font-size: 1.5rem;
+}
+
+.post-count {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.post-count > div {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-count img {
+  width: 2rem;
+}
+
+.post-action {
+  display: flex;
+  color: #3c3c3c;
+}
+
+.post-action img {
+  width: 3rem;
+}
+
+.post-action button {
+  width: 50%;
+  font-size: 1.8rem;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 0;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  cursor: pointer;
+}
+
+.post-action button:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
