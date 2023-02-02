@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { logoutRequest } from "../../store/Auth/auth-action";
@@ -12,7 +12,9 @@ import notifIcon from "../../icons/notifications.svg";
 import logoutIcon from "../../icons/logout.svg";
 
 function NavBar() {
+  const userState = useSelector(state => state.user);
   const dispatch = useDispatch();
+
   const [dropdownUser, setDropdownUser] = useState(false);
 
   const logoutHandler = () => {
@@ -26,7 +28,7 @@ function NavBar() {
   return (
     <nav className={classes["nav-bar"]}>
       <Link to="/home" className={classes.logo}>
-        Fakebook
+        fakebook
       </Link>
 
       <div className={classes["search-bar"]}>
@@ -47,13 +49,13 @@ function NavBar() {
       </div>
 
       <div className={classes.avatar} onClick={toggleDropdownUser}>
-        <img src="assets/avatars/image-jaime.jpg" alt="" />
+        <img src={userState.curUserAvatar} alt="" />
 
         {dropdownUser && (
           <div className={classes["dropdown-user"]}>
-            <Link to="/profile">
-              <img src="assets/avatars/image-jaime.jpg" alt="" />
-              Le Minh Phuc
+            <Link to={`/profile/${userState.curUserId}`}>
+              <img src={userState.curUserAvatar} alt="" />
+              {userState.curUserName}
             </Link>
 
             <Link onClick={logoutHandler} to="/auth">

@@ -1,43 +1,84 @@
-import React, { useState } from "react";
-
-import { Users } from "../../dummyData";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { LIKE_POST_SERVICE } from "../../service";
+import { getAllPost } from "../../store/Post/post-action";
 
 import moreIcon from "../../icons/more.svg";
 import likeIcon from "../../icons/like.svg";
 import likeCountIcon from "../../icons/like_count.svg";
 import likeFilledIcon from "../../icons/like_filled.svg";
 import commentIcon from "../../icons/comment.svg";
+
 import classes from "./Post.module.css";
 
+const calcTimePassed = postedAt => {
+  const timePassed = new Date() - new Date(postedAt);
+  const minutePassed = Math.ceil(timePassed / 1000 / 60);
+
+  if (minutePassed < 1) return "Just now";
+
+  if (minutePassed < 60) return `${minutePassed} minutes ago`;
+
+  if (minutePassed < 1440) return `${Math.ceil(minutePassed / 60)} hours ago`;
+
+  return `${new Date(postedAt).getDate()}/${new Date(postedAt).getMonth() + 1}/${new Date(postedAt).getFullYear()}`;
+};
+
 function Post(props) {
-  const { userId, desc = "", photo, date, like, comment } = props.postData;
-  const userPosted = Users.find(user => user.id === userId);
+  const userState = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
-  const [likes, setLikes] = useState(like);
-  const [isLiked, setIsLiked] = useState(false);
+  const { id, userId, description = "", photo, postedAt, likedBy, commentCount } = props.postData;
+  const userPosted = userState.userList.find(user => user.id === userId);
 
-  const likeHandler = () => {
-    setLikes(like => {
-      if (isLiked) return like - 1;
-      else return like + 1;
-    });
+  const likedByArr = likedBy === null ? [] : likedBy.split(" ");
+  const isLiked = likedByArr.some(id => +id === userState.curUserId);
 
-    setIsLiked(state => !state);
+  const likeHandler = async () => {
+    if (isLiked) {
+      const updatedLiked = likedByArr.filter(id => +id !== userState.curUserId);
+      const res = await fetch(LIKE_POST_SERVICE(id), {
+        method: "PUT",
+        body: JSON.stringify({
+          likedBy: updatedLiked.join(" "),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(res);
+    }
+
+    if (!isLiked) {
+      likedByArr.push(userState.curUserId);
+      const res = await fetch(LIKE_POST_SERVICE(id), {
+        method: "PUT",
+        body: JSON.stringify({
+          likedBy: likedByArr.join(" "),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(res);
+    }
+
+    dispatch(getAllPost());
   };
 
   return (
     <div className={classes.post}>
       <div className={classes["post-top"]}>
         <div className={classes["post-info"]}>
-          <img src={userPosted?.profilePicture} alt="avatar" />
-          <p>{userPosted?.username}</p>
-          <p>{date}</p>
+          <img src={userPosted?.avatar} alt="avatar" />
+          <p>{userPosted?.name}</p>
+          <p>{calcTimePassed(postedAt)}</p>
         </div>
         <img src={moreIcon} alt="more" />
       </div>
 
       <div className={classes["post-center"]}>
-        <p>{desc}</p>
+        <p>{description}</p>
         <img src={photo} alt="post" />
       </div>
 
@@ -45,9 +86,9 @@ function Post(props) {
         <div className={classes["post-count"]}>
           <div>
             <img src={likeCountIcon} alt="like" />
-            <p>{likes} people like this post</p>
+            <p>{likedByArr.length} people like this post</p>
           </div>
-          <p>{comment} comments</p>
+          <p>{commentCount} comments</p>
         </div>
 
         <div className={classes["post-action"]}>

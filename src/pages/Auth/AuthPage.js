@@ -20,7 +20,7 @@ function LoginPage() {
       {isLoading && <SpinKit />}
       <div className={classes.page}>
         <div className={classes.banner}>
-          Fakebook
+          fakebook
           <p>Connect with friends and the world around you on Fakebook.</p>
         </div>
 

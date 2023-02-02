@@ -1,7 +1,7 @@
 export const INITIAL_STATE = {
   auth: {
     token: "",
-    userId: "",
+    userId: 0,
     isLogin: false,
     isLoading: false,
     error: null,
@@ -10,5 +10,27 @@ export const INITIAL_STATE = {
     isOpen: false,
     content: "",
     type: "",
+  },
+  user: {
+    curUserId: "",
+    curUserName: "",
+    curUserAvatar: "",
+    curUserLocation: "",
+    curUserHometown: "",
+    curUserRelationship: 0,
+    curUserBiography: "",
+    curUserCoverImg: "",
+    userList: [],
+    otherUserId: "",
+    otherUserName: "",
+    otherUserAvatar: "",
+    otherUserLocation: "",
+    otherUserHometown: "",
+    otherUserRelationship: 0,
+    otherUserBiography: "",
+    otherUserCoverImg: "",
+  },
+  post: {
+    postList: [],
   },
 };

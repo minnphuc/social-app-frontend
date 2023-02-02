@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { getOtherUser } from "../../store/User/user-action";
 
 import Feed from "../../components/Feed/Feed";
 import NavBar from "../../components/Navigation/NavBar";
@@ -9,6 +12,10 @@ import UploadForm from "./UploadForm";
 import classes from "./ProfilePage.module.css";
 
 function ProfilePage() {
+  const { id } = useParams();
+  const userState = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const openForm = () => {
@@ -19,9 +26,29 @@ function ProfilePage() {
     setIsOpen(false);
   };
 
+  // My wall vs. Other wall
+
+  let isMyProfile = true;
+
+  if (+id !== userState.curUserId) {
+    dispatch(getOtherUser(id));
+    isMyProfile = false;
+  }
+
+  const userData = {
+    id: isMyProfile ? userState.curUserId : userState.otherUserId,
+    name: isMyProfile ? userState.curUserName : userState.otherUserName,
+    avatar: isMyProfile ? userState.curUserAvatar : userState.otherUserAvatar,
+    location: isMyProfile ? userState.curUserLocation : userState.otherUserLocation,
+    hometown: isMyProfile ? userState.curUserHometown : userState.otherUserHometown,
+    relationship: isMyProfile ? userState.curUserRelationship : userState.otherUserRelationship,
+    biography: isMyProfile ? userState.curUserBiography : userState.otherUserBiography,
+    coverImg: isMyProfile ? userState.curUserCoverImg : userState.otherUserCoverImg,
+  };
+
   return (
     <>
-      {isOpen && <UploadForm onClose={closeForm} />}
+      {isOpen && isMyProfile && <UploadForm onClose={closeForm} data={userData} />}
 
       <NavBar />
       <div className={classes.profile}>
@@ -30,19 +57,19 @@ function ProfilePage() {
         <div className={classes["profile-right"]}>
           <div className="profile-right-top">
             <div className={classes["profile-cover"]}>
-              <img src="assets/img1.jpg" alt="cover" />
-              <img src="assets/avatars/image-jaime.jpg" alt="user" onClick={openForm} />
+              <img src={userData.coverImg} alt="cover" />
+              <img src={userData.avatar} alt="user" onClick={openForm} />
             </div>
 
             <div className={classes["profile-info"]}>
-              <h4>Le Minh Phuc</h4>
-              <span>Not Wibu</span>
+              <h4>{userData.name}</h4>
+              <span>{userData.biography}</span>
             </div>
           </div>
 
           <div className={classes["profile-right-bottom"]}>
-            <Feed profile />
-            <RightBar profile />
+            <Feed profile myView={isMyProfile} />
+            <RightBar profile myView={isMyProfile} data={userData} list={userState.userList} />
           </div>
         </div>
       </div>

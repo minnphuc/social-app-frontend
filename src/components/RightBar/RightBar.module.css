@@ -12,6 +12,12 @@
   margin-top: 2rem;
 }
 
+.icon {
+  width: 2.5rem;
+  cursor: pointer;
+  margin-left: 10rem;
+}
+
 .online-list {
   list-style-type: none;
   padding-left: 0;
@@ -22,6 +28,14 @@
   width: 100%;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.friend-list a:link,
+.friend-list a:visited,
+.friend-list a:active,
+.friend-list a:focus {
+  text-decoration: none;
+  color: inherit;
 }
 
 .profile-info {
