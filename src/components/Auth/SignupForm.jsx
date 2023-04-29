@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
 import { signupRequest } from "../../store/Auth/auth-action";
+import { modalActions } from "../../store/Modal/modal-state";
 
 import classes from "./Form.module.css";
 
@@ -15,7 +16,14 @@ function SignupForm(props) {
   } = useForm();
 
   const submitHandler = data => {
-    dispatch(signupRequest(data, props.onToggle));
+    if (data.password === data.passwordConfirm) dispatch(signupRequest(data));
+    else
+      dispatch(
+        modalActions.openModal({
+          content: "Confirm password have to match the password",
+          type: "error",
+        })
+      );
   };
 
   return (
@@ -39,6 +47,14 @@ function SignupForm(props) {
         placeholder="Password"
         {...register("password", { required: true })}
         className={errors.password ? "invalid" : ""}
+        minLength={6}
+      />
+
+      <input
+        type="password"
+        placeholder="Confirm password"
+        {...register("passwordConfirm", { required: true })}
+        className={errors.passwordConfirm ? "invalid" : ""}
         minLength={6}
       />
 

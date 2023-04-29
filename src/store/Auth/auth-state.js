@@ -12,26 +12,12 @@ const authState = createSlice({
       state.token = token;
       state.userId = userId;
       state.isLogin = !!token;
-      state.isLoading = false;
     },
 
     logout(state) {
       state.token = null;
       state.userId = null;
       state.isLogin = false;
-    },
-
-    sendingRequest(state) {
-      state.isLoading = true;
-    },
-
-    resolveRequest(state) {
-      state.isLoading = false;
-    },
-
-    errorRequest(state, action) {
-      state.error = action.payload;
-      state.isLoading = false;
     },
   },
 });

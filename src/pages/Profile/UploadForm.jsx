@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { userActions } from "../../store/User/user-state";
-import { UPLOAD_AVATAR_SERVICE, CHANGE_AVATAR_SERVICE } from "../../service";
+import React, { useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { UPDATE_ME_SERVICE } from "../../service";
+import { modalActions } from "../../store/Modal/modal-state";
+import { spinnerActions } from "../../store/Spinner/spinner-state";
 
 import Backdrop from "../../components/UI/Spinkit/Backdrop";
 
@@ -10,57 +12,61 @@ import closeIcon from "../../icons/close.svg";
 import photoIcon from "../../icons/photo.svg";
 
 function UploadForm(props) {
-  const [uploadedImgUrl, setUploadedImageUrl] = useState("");
-  const [currentFile, setCurrentFile] = useState(null);
+  const { token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
-  const { id } = props.data;
+  const currentFile = useRef(null);
+  const [uploadedImgUrl, setUploadedImageUrl] = useState("");
 
   const fileUploadHandler = e => {
     const files = Array.from(e.target.files);
     if (files.length !== 0) {
+      currentFile.current = files[0];
       setUploadedImageUrl(URL.createObjectURL(files[0]));
-      setCurrentFile(files[0]);
     }
   };
 
   const removeFileHandler = () => {
+    currentFile.current = null;
     setUploadedImageUrl("");
   };
 
   const submitFileHandler = async () => {
-    if (currentFile == null) return;
-
-    const fileName = currentFile.name;
-
-    const data = new FormData();
-    data.append("file", currentFile);
-
     try {
-      fetch(UPLOAD_AVATAR_SERVICE, {
-        method: "POST",
-        body: data,
-      }).then(res => console.log(res));
+      if (currentFile.current === null)
+        throw new Error("Please choose an image from your computer");
 
-      const res = await fetch(CHANGE_AVATAR_SERVICE(id), {
-        method: "PUT",
-        body: JSON.stringify({
-          avatar: `/assets/avatars/${fileName}`,
-        }),
+      dispatch(spinnerActions.open());
+
+      const formData = new FormData();
+      formData.append("photo", currentFile.current);
+      formData.append(
+        "oldPhoto",
+        props.updating === "avatar" ? props.oldPhoto.avatar : props.oldPhoto.cover
+      );
+      formData.append("imageType", props.updating);
+
+      const res = await fetch(UPDATE_ME_SERVICE, {
+        method: "PATCH",
+        body: formData,
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!res.ok) throw new Error("Error: Cannot update avatar!");
-      const resData = await res.json();
+      const { data } = await res.json();
+      console.log(data);
 
-      dispatch(userActions.loadCurrentUser(resData));
+      if (!res.ok) throw new Error(data.message);
+
+      props.onUpdate(data.user);
+      props.onClose();
+
+      dispatch(spinnerActions.close());
     } catch (error) {
-      console.error(error.message);
+      dispatch(spinnerActions.close());
+      dispatch(modalActions.open({ content: error.message, type: "error" }));
     }
-
-    props.onClose();
   };
 
   // JSX
@@ -81,7 +87,7 @@ function UploadForm(props) {
     <Backdrop>
       <div className={classes.modal}>
         <div className={classes.header}>
-          <p>Change your avatar</p>
+          <p>Change your {props.updating}</p>
         </div>
         <hr />
 
@@ -91,7 +97,7 @@ function UploadForm(props) {
           <button onClick={props.onClose} style={{ backgroundColor: "#3c3c3c" }}>
             Cancel
           </button>
-          <button onClick={submitFileHandler}>OK</button>
+          <button onClick={submitFileHandler}>Change {props.updating}</button>
         </div>
       </div>
     </Backdrop>

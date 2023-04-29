@@ -1,20 +1,19 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { userActions } from "../../../store/User/user-state";
-import { EDIT_USER_BY_ID_SERVICE } from "../../../service";
+import { UPDATE_ME_SERVICE } from "../../../service";
 
 import Backdrop from "../Spinkit/Backdrop";
 
 import classes from "./Form.module.css";
 
 function Form(props) {
+  const { token } = useSelector(state => state.auth);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const dispatch = useDispatch();
 
   const currentData = props.data;
 
@@ -24,31 +23,33 @@ function Form(props) {
     const inputRelationship = data.relationship;
     const inputBiography = data.biography;
 
-    const updateUserById = async () => {
+    const updateMe = async () => {
       try {
-        const res = await fetch(EDIT_USER_BY_ID_SERVICE(currentData.id), {
-          method: "PUT",
+        const res = await fetch(UPDATE_ME_SERVICE, {
+          method: "PATCH",
           body: JSON.stringify({
             location: inputLocation,
             hometown: inputHometown,
             biography: inputBiography,
-            relationship: inputRelationship,
+            relationship: Boolean(+inputRelationship),
           }),
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
 
-        if (!res.ok) throw new Error("Error: Cannot update information!");
-        const data = await res.json();
+        const { data } = await res.json();
 
-        dispatch(userActions.loadCurrentUser(data));
+        if (!res.ok) throw new Error(data.message);
+
+        props.onUpdate(data.user);
       } catch (error) {
         console.error(error.message);
       }
     };
 
-    updateUserById();
+    updateMe();
 
     props.onClose();
   };
@@ -84,7 +85,7 @@ function Form(props) {
 
         <select {...register("relationship")}>
           <option value="0">Single</option>
-          <option value="1">In a Relationship</option>
+          <option value="1">Married</option>
         </select>
 
         <div className={classes["btn-container"]}>

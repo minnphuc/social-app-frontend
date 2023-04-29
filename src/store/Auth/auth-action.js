@@ -1,6 +1,9 @@
 import { authActions } from "./auth-state";
 import { modalActions } from "../Modal/modal-state";
+import { spinnerActions } from "../Spinner/spinner-state";
+
 import { LOGIN_SERVICE, SIGNUP_SERVICE } from "../../service";
+import { JWT_EXPIRES_IN } from "../../config";
 
 let logoutTimerId;
 
@@ -37,6 +40,23 @@ const getStoredToken = () => {
   };
 };
 
+const login = (dispatch, token, id) => {
+  // Login
+  dispatch(authActions.login({ token: token, userId: id }));
+
+  // Set timer for expired token
+  const expiredTime = new Date(Date.now() + JWT_EXPIRES_IN);
+  const remainingTime = calcRemainingTime(expiredTime);
+  logoutTimerId = setTimeout(() => {
+    dispatch(logoutRequest());
+  }, remainingTime);
+
+  // Store auth info
+  localStorage.setItem("token", token);
+  localStorage.setItem("userId", id);
+  localStorage.setItem("expiredTime", expiredTime);
+};
+
 // ----THUNK----
 
 export const logoutRequest = function () {
@@ -52,7 +72,8 @@ export const logoutRequest = function () {
 export const loginRequest = function (email, password) {
   return async dispatch => {
     try {
-      dispatch(authActions.sendingRequest());
+      dispatch(spinnerActions.open());
+
       const res = await fetch(LOGIN_SERVICE, {
         method: "POST",
         body: JSON.stringify({ email: email, password: password }),
@@ -60,55 +81,58 @@ export const loginRequest = function (email, password) {
           "Content-Type": "application/json",
         },
       });
-      const data = await res.json();
+      const { data } = await res.json();
 
       if (!res.ok) throw new Error(data.message);
 
-      const { token, id, expiresIn } = data;
-      // Login
-      dispatch(authActions.login({ token: token, userId: id }));
+      const { token, user } = data;
 
-      // Set timer for expired token
-      const expiredTime = new Date(new Date().getTime() + +expiresIn);
-      const remainingTime = calcRemainingTime(expiredTime);
-      logoutTimerId = setTimeout(() => {
-        dispatch(logoutRequest());
-      }, remainingTime);
+      login(dispatch, token, user._id);
 
-      // Store auth info
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", id);
-      localStorage.setItem("expiredTime", expiredTime);
+      dispatch(spinnerActions.close());
     } catch (err) {
-      dispatch(authActions.errorRequest(err.message));
-      dispatch(modalActions.openModal({ content: err.message, type: "error" }));
+      dispatch(spinnerActions.close());
+      dispatch(modalActions.open({ content: err.message, type: "error" }));
     }
   };
 };
 
-export const signupRequest = function (newUser, navigateToLogin) {
+export const signupRequest = function (newUser) {
   return async dispatch => {
     try {
-      dispatch(authActions.sendingRequest());
+      dispatch(spinnerActions.open());
 
       const res = await fetch(SIGNUP_SERVICE, {
         method: "POST",
-        body: JSON.stringify({ email: newUser.email, password: newUser.password, name: newUser.name }),
+        body: JSON.stringify({
+          email: newUser.email,
+          password: newUser.password,
+          passwordConfirm: newUser.passwordConfirm,
+          name: newUser.name,
+        }),
         headers: {
           "Content-Type": "application/json",
         },
       });
-      const data = await res.json();
-      console.log(res);
+      const { data } = await res.json();
+
       if (!res.ok) throw new Error(data.message);
 
-      dispatch(authActions.resolveRequest());
+      const { token, user } = data;
 
-      dispatch(modalActions.openModal({ content: "Your account has been registered successfully", type: "success" }));
-      navigateToLogin();
+      dispatch(
+        modalActions.open({
+          content: "Your account has been registered successfully",
+          type: "success",
+        })
+      );
+
+      login(dispatch, token, user._id);
+
+      dispatch(spinnerActions.close());
     } catch (err) {
-      dispatch(authActions.errorRequest(err.message));
-      dispatch(modalActions.openModal({ content: err.message, type: "error" }));
+      dispatch(spinnerActions.close());
+      dispatch(modalActions.open({ content: err.message, type: "error" }));
     }
   };
 };

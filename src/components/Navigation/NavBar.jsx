@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { logoutRequest } from "../../store/Auth/auth-action";
+import { getGlobalUser } from "../../store/User/user-action";
 
 import classes from "./NavBar.module.css";
 import searchIcon from "../../icons/search.svg";
@@ -12,10 +13,14 @@ import notifIcon from "../../icons/notifications.svg";
 import logoutIcon from "../../icons/logout.svg";
 
 function NavBar() {
-  const userState = useSelector(state => state.user);
+  const userGlobData = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   const [dropdownUser, setDropdownUser] = useState(false);
+
+  useEffect(() => {
+    dispatch(getGlobalUser());
+  }, [dispatch]);
 
   const logoutHandler = () => {
     dispatch(logoutRequest());
@@ -48,14 +53,14 @@ function NavBar() {
         <img src={notifIcon} alt="notification" />
       </div>
 
-      <div className={classes.avatar} onClick={toggleDropdownUser}>
-        <img src={userState.curUserAvatar} alt="" />
+      <div className={classes.photo} onClick={toggleDropdownUser}>
+        <img src={userGlobData.photo} alt="" />
 
         {dropdownUser && (
           <div className={classes["dropdown-user"]}>
-            <Link to={`/profile/${userState.curUserId}`}>
-              <img src={userState.curUserAvatar} alt="" />
-              {userState.curUserName}
+            <Link to={`/profile/${userGlobData.id}`}>
+              <img src={userGlobData.photo} alt="" />
+              {userGlobData.name}
             </Link>
 
             <Link onClick={logoutHandler} to="/auth">

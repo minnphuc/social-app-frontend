@@ -1,30 +1,17 @@
 import { GET_USER_BY_ID_SERVICE, GET_ALL_USER_SERVICE } from "../../service";
 import { userActions } from "./user-state";
 
-export const getCurrentUser = function (userId) {
-  return async dispatch => {
+export const getGlobalUser = function () {
+  return async (dispatch, getState) => {
     try {
-      const res = await fetch(GET_USER_BY_ID_SERVICE(userId));
-      const data = await res.json();
+      const { auth } = getState();
 
-      if (data === null) throw new Error("Error: User does not exist!");
+      const res = await fetch(GET_USER_BY_ID_SERVICE(auth.userId));
+      const { data } = await res.json();
 
-      dispatch(userActions.loadCurrentUser(data));
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-};
+      if (!res.ok) throw new Error(data.message);
 
-export const getOtherUser = function (userId) {
-  return async dispatch => {
-    try {
-      const res = await fetch(GET_USER_BY_ID_SERVICE(userId));
-      const data = await res.json();
-
-      if (data === null) throw new Error("Error: User does not exist!");
-
-      dispatch(userActions.loadOtherUser(data));
+      dispatch(userActions.loadUserData(data.user));
     } catch (error) {
       console.error(error.message);
     }
@@ -35,11 +22,11 @@ export const getAllUser = function () {
   return async dispatch => {
     try {
       const res = await fetch(GET_ALL_USER_SERVICE);
-      const data = await res.json();
+      const { data } = await res.json();
 
       if (data === null) throw new Error("Error: Cannot get user list!");
 
-      dispatch(userActions.loadUserList(data));
+      dispatch(userActions.loadUserList(data.users));
     } catch (error) {
       console.error(error.message);
     }
