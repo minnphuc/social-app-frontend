@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Form from "../UI/Form/Form";
-
 import OnlineFriend from "../FriendList/OnlineFriend";
 import Friend from "../FriendList/Friend";
 
@@ -10,29 +9,30 @@ import classes from "./RightBar.module.css";
 import editIcon from "../../icons/edit.svg";
 
 function RightBar(props) {
-  const [formIsDisplayed, setFormIsDisplayed] = useState(false);
-  const { userId: currentUserId } = useSelector(state => state.auth);
+  const userGlobData = useSelector(state => state.user);
+  const [isOpen, setIsOpen] = useState(false);
 
   const openForm = () => {
-    setFormIsDisplayed(true);
+    setIsOpen(true);
   };
 
   const closeForm = () => {
-    setFormIsDisplayed(false);
+    setIsOpen(false);
   };
 
   const isProfilePage = props.profile;
+  const isMyProfile = props.myProfile;
   const profileStyle = isProfilePage ? { width: "35%" } : {};
-  const isMyProfile = props.myView;
   const userData = props.data;
   const userList = props.list;
 
   const onlineFriendList = userList
-    .filter(user => user.id !== +currentUserId)
-    .map(user => <OnlineFriend key={user.id} friendData={user} />);
+    .filter(user => user._id !== userGlobData.userId)
+    .map(user => <OnlineFriend key={user._id} friendData={user} />);
+
   const profileFriendList = userList
-    .filter(user => user.id !== +currentUserId)
-    .map(user => <Friend key={user.id} friendData={user} />);
+    .filter(user => user._id !== userGlobData.userId)
+    .map(user => <Friend key={user._id} friendData={user} />);
 
   // JSX
 
@@ -46,10 +46,12 @@ function RightBar(props) {
 
   const profileRightBar = (
     <>
-      {formIsDisplayed && <Form onClose={closeForm} data={userData} />}
+      {isOpen && <Form data={userData} onClose={closeForm} onUpdate={props.onUpdate} />}
       <p>
-        Personal information{" "}
-        {isMyProfile && <img src={editIcon} alt="edit" onClick={openForm} className={classes.icon} />}
+        Personal information
+        {isMyProfile && (
+          <img src={editIcon} alt="edit" onClick={openForm} className={classes.icon} />
+        )}
       </p>
       <div className={classes["profile-info"]}>
         <div className={classes["profile-info-item"]}>
@@ -64,7 +66,7 @@ function RightBar(props) {
 
         <div className={classes["profile-info-item"]}>
           <span>Relationship:</span>
-          <span>{userData?.relationship === 1 ? "In a Relationship" : "Single"}</span>
+          <span>{userData?.relationship ? "Married" : "Single"}</span>
         </div>
       </div>
 

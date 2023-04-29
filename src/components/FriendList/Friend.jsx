@@ -4,12 +4,12 @@ import classes from "./Friend.module.css";
 import { Link } from "react-router-dom";
 
 function Friend(props) {
-  const { name, avatar, id } = props.friendData;
+  const { name, photo, _id } = props.friendData;
   return (
-    <Link to={`/profile/${id}`}>
+    <Link to={`/profile/${_id}`}>
       <div className={classes.friend}>
         <div className={classes["friend-avatar"]}>
-          <img src={avatar} alt="friend_ava" />
+          <img src={photo} alt="friend_ava" />
         </div>
         <span>{name}</span>
       </div>

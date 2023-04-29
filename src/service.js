@@ -1,25 +1,20 @@
+const url = "http://127.0.0.1:3000/api/v1/";
+
+// AUTH
+export const SIGNUP_SERVICE = `${url}users/signup`;
+export const LOGIN_SERVICE = `${url}users/login`;
+
 // USER
-export const LOGIN_SERVICE = "http://localhost:8080/user/signin";
-export const SIGNUP_SERVICE = "http://localhost:8080/user/signup";
-export const UPLOAD_AVATAR_SERVICE = "http://localhost:8080/user/upload";
-export const GET_ALL_USER_SERVICE = "http://localhost:8080/user/getAll";
+export const GET_ALL_USER_SERVICE = `${url}users`;
 
 export const GET_USER_BY_ID_SERVICE = userId => {
-  return `http://localhost:8080/user/${userId}`;
+  return `${url}users/${userId}`;
 };
 
-export const EDIT_USER_BY_ID_SERVICE = userId => {
-  return `http://localhost:8080/user/${userId}`;
-};
-
-export const CHANGE_AVATAR_SERVICE = userId => {
-  return `http://localhost:8080/user/avatar/${userId}`;
-};
+export const UPDATE_ME_SERVICE = `${url}users/updateMe`;
 
 // POST
-export const GET_ALL_POST_SERVICE = "http://localhost:8080/post/getAll";
-export const UPLOAD_POST_SERVICE = "http://localhost:8080/post/upload";
-export const ADD_POST_SERVICE = "http://localhost:8080/post/add";
-export const LIKE_POST_SERVICE = postId => {
-  return `http://localhost:8080/post/like/${postId}`;
+export const POST_SERVICE = `${url}posts`;
+export const UPDATE_POST_SERVICE = postId => {
+  return `${url}posts/${postId}`;
 };

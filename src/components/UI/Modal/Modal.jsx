@@ -14,7 +14,7 @@ function Modal() {
   const dispatch = useDispatch();
 
   const closeModal = () => {
-    dispatch(modalActions.closeModal());
+    dispatch(modalActions.close());
   };
 
   if (!isOpen) return;

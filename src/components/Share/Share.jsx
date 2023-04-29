@@ -1,73 +1,72 @@
 import React, { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { UPLOAD_POST_SERVICE, ADD_POST_SERVICE } from "../../service";
+
+import { POST_SERVICE } from "../../service";
+import { modalActions } from "../../store/Modal/modal-state";
+import { spinnerActions } from "../../store/Spinner/spinner-state";
 
 import photoIcon from "../../icons/photo.svg";
 import closeIcon from "../../icons/close.svg";
 import classes from "./Share.module.css";
-import { postActions } from "../../store/Post/post-state";
 
-function Share() {
-  const userData = useSelector(state => state.user);
+function Share(props) {
+  const userGlobData = useSelector(state => state.user);
+  const { token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
-  const statusRef = useRef();
+  const status = useRef();
+  const currentFile = useRef(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-  const [currentFile, setCurrentFile] = useState(null);
 
   const fileUploadHandler = e => {
     const files = Array.from(e.target.files);
     if (files.length !== 0) {
+      currentFile.current = files[0];
       setUploadedImageUrl(URL.createObjectURL(files[0]));
-      setCurrentFile(files[0]);
     }
   };
 
   const removeFileHandler = () => {
+    currentFile.current = null;
     setUploadedImageUrl("");
   };
 
   const postHandler = async () => {
-    if (currentFile === null) return;
-
-    const fileName = currentFile.name;
-
-    const data = new FormData();
-    data.append("file", currentFile);
-
-    const desc = statusRef.current.value;
-    const photo = `/assets/${fileName}`;
-    const postedAt = new Date().toString();
-    const userId = userData.curUserId;
-
+    const caption = status.current.value.trim();
+    const file = currentFile.current;
     try {
-      fetch(UPLOAD_POST_SERVICE, {
-        method: "POST",
-        body: data,
-      }).then(res => console.log(res));
+      if (caption.length === 0 && file === null)
+        throw new Error("Please provide information for your post");
 
-      const res = await fetch(ADD_POST_SERVICE, {
+      dispatch(spinnerActions.open());
+
+      const formData = new FormData();
+      file !== null && formData.append("photo", currentFile.current);
+      caption.length !== 0 && formData.append("caption", caption);
+
+      const res = await fetch(POST_SERVICE, {
         method: "POST",
-        body: JSON.stringify({
-          description: desc,
-          photo,
-          postedAt,
-          userId,
-        }),
+        body: formData,
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!res.ok) throw new Error("Error: Cannot post status!");
-      const resData = await res.json();
+      const { data } = await res.json();
 
-      dispatch(postActions.addPost(resData));
+      console.log(data);
 
+      if (!res.ok) throw new Error(data.message);
+
+      props.onNewPost(data.post);
+
+      dispatch(spinnerActions.close());
+
+      status.current.value = "";
       removeFileHandler();
-      statusRef.current.value = "";
     } catch (error) {
-      console.error(error.message);
+      dispatch(modalActions.open({ content: error.message, type: "error" }));
+      dispatch(spinnerActions.close());
     }
   };
 
@@ -82,8 +81,14 @@ function Share() {
   return (
     <div className={classes.share}>
       <div className={classes["share-top"]}>
-        <img src={userData.curUserAvatar} alt="avatar" />
-        <textarea name="status" id="status" rows="2" placeholder="What's on your mind?" ref={statusRef}></textarea>
+        <img src={userGlobData.photo} alt="avatar" />
+        <textarea
+          name="status"
+          id="status"
+          rows="2"
+          placeholder="What's on your mind?"
+          ref={status}
+        ></textarea>
       </div>
 
       {uploadedImageUrl && previewImage}
@@ -93,8 +98,8 @@ function Share() {
       <div className={classes["share-bot"]}>
         <div className={classes["share-option"]}>
           <img src={photoIcon} alt="" />
-          <p>Photo or Video</p>
-          <input type="file" onChange={fileUploadHandler} />
+          <p>Photo</p>
+          <input type="file" onChange={fileUploadHandler} accept="image/*" />
         </div>
 
         <button onClick={postHandler}>Share</button>

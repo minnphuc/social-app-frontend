@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 
 import LoginForm from "../../components/Auth/LoginForm";
 import SignupForm from "../../components/Auth/SignupForm";
-import SpinKit from "../../components/UI/Spinkit/SpinKit";
 
 import classes from "./AuthPage.module.css";
 
 function LoginPage() {
   const [loginMode, setLoginMode] = useState(true);
-  const { isLoading } = useSelector(state => state.auth);
 
   const toggleForm = () => {
     setLoginMode(state => !state);
@@ -17,7 +14,6 @@ function LoginPage() {
 
   return (
     <>
-      {isLoading && <SpinKit />}
       <div className={classes.page}>
         <div className={classes.banner}>
           fakebook

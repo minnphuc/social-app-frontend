@@ -3,12 +3,12 @@ import React from "react";
 import classes from "./OnlineFriend.module.css";
 
 function OnlineFriend(props) {
-  const { name, avatar } = props.friendData;
+  const { name, photo } = props.friendData;
 
   return (
     <li className={classes["online-friend"]}>
       <div style={{ position: "relative" }}>
-        <img src={avatar} alt="friend" />
+        <img src={photo} alt="friend" />
         <div className={classes["online-badge"]}></div>
       </div>
       <p>{name}</p>
