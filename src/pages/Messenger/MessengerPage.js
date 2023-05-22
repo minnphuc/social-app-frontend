@@ -38,6 +38,7 @@ function MessengerPage() {
 
   useEffect(() => {
     socket.current = io("ws://127.0.0.1:3000");
+    // socket.current = io("https://socialapp-minnphuc.netlify.app");
 
     // Online users
     socket.current?.on("getUsers", users => {
