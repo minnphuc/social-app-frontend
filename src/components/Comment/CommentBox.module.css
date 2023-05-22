@@ -1,0 +1,74 @@
+/* Your Comment */
+
+.input_comment {
+  width: 90%;
+  height: max-content;
+  margin-top: 1rem;
+  background-color: var(--white);
+  border: none;
+  border-radius: 1rem;
+  padding: 1.5rem 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 1000ms ease;
+  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+}
+
+.avatar {
+  width: 3rem;
+  border-radius: 50%;
+}
+
+.comment_box {
+  width: 85%;
+  padding: 1rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--dark-blue);
+  border: 2px solid var(--light-gray);
+  border-radius: 1rem;
+  outline: none;
+  transition: border 200ms ease;
+}
+
+.send_btn {
+  width: 3rem;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.delete_edit_container {
+  position: absolute;
+  right: 2rem;
+}
+
+.delete_btn {
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.edit_btn {
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.update_btn {
+  padding: 0.8rem 2rem;
+  color: var(--white);
+  background-color: var(--moderate-blue);
+  font-size: 1.4rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  transition: all 200ms ease;
+  /* updateBtn */
+  margin-top: 2rem;
+  margin-left: 30rem;
+}
+
+.comment_box:focus {
+  border: 2px solid var(--moderate-blue);
+}

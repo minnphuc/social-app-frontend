@@ -2,6 +2,7 @@
   width: 20%;
   padding: 0;
   margin: 0;
+  overflow-y: scroll;
 }
 
 .sidebar-list {
@@ -27,4 +28,24 @@
 
 .sidebar-list li img {
   width: 2.5rem;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  visibility: hidden;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  visibility: hidden;
+}
+
+.sidebar:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+.sidebar:active::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+.sidebar:focus::-webkit-scrollbar-thumb {
+  visibility: visible;
 }

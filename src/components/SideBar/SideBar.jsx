@@ -1,5 +1,7 @@
 import React from "react";
 
+import RecommendUser from "./RecommendUser";
+
 import feedIcon from "../../icons/feed.svg";
 import chatIcon from "../../icons/chat_sidebar.svg";
 import videoIcon from "../../icons/video.svg";
@@ -60,6 +62,8 @@ function SideBar() {
           Courses
         </li>
       </ul>
+      <hr />
+      <RecommendUser />
     </div>
   );
 }

@@ -8,7 +8,7 @@ export const INITIAL_STATE = {
     id: "",
     name: "",
     photo: "",
-    userList: [],
+    followingList: [],
   },
   modal: {
     isOpen: false,

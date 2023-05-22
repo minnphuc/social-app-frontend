@@ -39,8 +39,14 @@
   width: 3.5rem;
 }
 
-.post-info p:nth-child(2) {
+.post-info a {
   font-weight: 700;
+  text-decoration: none;
+  color: #3c3c3c;
+}
+
+.post-info a:hover {
+  text-decoration: underline;
 }
 
 /* CENTER */

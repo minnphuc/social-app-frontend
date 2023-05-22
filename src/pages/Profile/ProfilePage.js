@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+
 import { GET_USER_BY_ID_SERVICE } from "../../service";
+import { spinnerActions } from "../../store/Spinner/spinner-state";
+import { userActions } from "../../store/User/user-state";
+import { modalActions } from "../../store/Modal/modal-state";
+import followUser from "../../utils/followUser";
 
 import Feed from "../../components/Feed/Feed";
 import NavBar from "../../components/Navigation/NavBar";
@@ -10,14 +15,21 @@ import SideBar from "../../components/SideBar/SideBar";
 import UploadForm from "./UploadForm";
 
 import classes from "./ProfilePage.module.css";
+import addIcon from "../../icons/add.svg";
+import checkedIcon from "../../icons/checked.svg";
 
 function ProfilePage() {
   const { id } = useParams();
   const userGlobData = useSelector(state => state.user);
+  const { token } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   const [displayedUser, setDisplayedUser] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const formUpdating = useRef("");
+
+  const isFollowing = userGlobData.followingList.some(ele => ele === id);
+  const isMyProfile = id === userGlobData.id;
 
   useEffect(() => {
     const fetchCurUser = async () => {
@@ -33,8 +45,9 @@ function ProfilePage() {
       }
     };
 
-    fetchCurUser();
-  }, [id]);
+    dispatch(spinnerActions.open());
+    fetchCurUser().then(() => dispatch(spinnerActions.close()));
+  }, [id, dispatch]);
 
   const updateMe = me => {
     //? SAVING COST
@@ -56,7 +69,22 @@ function ProfilePage() {
     setIsOpen(false);
   };
 
-  const isMyProfile = id === userGlobData.id;
+  const followHandler = async () => {
+    try {
+      dispatch(spinnerActions.open());
+
+      const updatedFollowingList = await followUser(
+        token,
+        userGlobData.followingList,
+        id
+      );
+
+      dispatch(userActions.updateFollowingList(updatedFollowingList));
+      dispatch(spinnerActions.close());
+    } catch (error) {
+      dispatch(modalActions.open({ content: error.message, type: "error" }));
+    }
+  };
 
   return (
     <>
@@ -81,6 +109,7 @@ function ProfilePage() {
                 alt="cover"
                 onClick={openForm}
               />
+
               <img
                 src={displayedUser.photoUrl || displayedUser.photo}
                 alt="avatar"
@@ -91,6 +120,15 @@ function ProfilePage() {
             <div className={classes["profile-info"]}>
               <h4>{displayedUser.name}</h4>
               <span>{displayedUser.biography}</span>
+              {!isMyProfile && (
+                <button
+                  onClick={followHandler}
+                  className={!isFollowing ? classes["btn-active"] : ""}
+                >
+                  <img src={isFollowing ? checkedIcon : addIcon} alt="add" />
+                  {isFollowing ? "Following" : "Follow"}
+                </button>
+              )}
             </div>
           </div>
 
@@ -100,7 +138,6 @@ function ProfilePage() {
               profile
               myProfile={isMyProfile}
               data={displayedUser}
-              list={userGlobData.userList}
               onUpdate={updateMe}
             />
           </div>

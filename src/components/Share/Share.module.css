@@ -25,7 +25,14 @@
   font-size: 2rem;
   width: 90%;
   padding: 1rem;
-  border-radius: 5px;
+  border-radius: 1rem;
+  border: 2px solid hsl(223, 19%, 93%);
+  outline: none;
+  transition: border 200ms ease;
+}
+
+.share-top textarea:focus {
+  border: 2px solid hsl(238, 40%, 52%);
 }
 
 .share-bot {

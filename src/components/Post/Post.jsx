@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { UPDATE_POST_SERVICE } from "../../service";
+import { Link } from "react-router-dom";
+
+import CommentSection from "../Comment/CommentSection";
+import { UPDATE_POST_SERVICE, COUNT_COMMENTS_OF_POST } from "../../service";
+import calcTimePassed from "../../utils/calcTimePassed";
+import likeUtil from "../../utils/likeUtils";
 
 import moreIcon from "../../icons/more.svg";
 import likeIcon from "../../icons/like.svg";
@@ -10,68 +15,50 @@ import commentIcon from "../../icons/comment.svg";
 
 import classes from "./Post.module.css";
 
-const calcTimePassed = postedAt => {
-  const timePassed = Date.now() - new Date(postedAt);
-  const minutePassed = Math.ceil(timePassed / 1000 / 60);
-
-  if (minutePassed < 1) return "Just now";
-
-  if (minutePassed < 60) return `${minutePassed} minutes ago`;
-
-  if (minutePassed < 1440) return `${Math.floor(minutePassed / 60)} hours ago`;
-
-  if (minutePassed < 10080) return `${Math.floor(minutePassed / 60 / 24)} days ago`;
-
-  return `${new Date(postedAt).getDate()}/${new Date(postedAt).getMonth() + 1}/${new Date(
-    postedAt
-  ).getFullYear()}`;
-};
-
 function Post(props) {
   const userGlobData = useSelector(state => state.user);
   const { token } = useSelector(state => state.auth);
 
-  const { _id: id, user, caption, photoUrl, postedAt, likedBy, commentCount } = props.postData;
+  const [commentIsOpen, setCommentIsOpen] = useState(false);
+  const [commentCount, setCommentCount] = useState();
+
+  const { _id: id, user, caption, photoUrl, postedAt, likedBy } = props.postData;
+
+  useEffect(() => {
+    const fetchCommentCount = async () => {
+      try {
+        const res = await fetch(COUNT_COMMENTS_OF_POST(id));
+        const { data } = await res.json();
+
+        if (!res.ok) throw new Error(data.message);
+
+        setCommentCount(data.count);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    fetchCommentCount();
+  }, [id]);
 
   const isLiked = likedBy.some(id => id === userGlobData.id);
 
+  const toggleCommentSection = () => {
+    setCommentIsOpen(state => !state);
+  };
+
   const likeHandler = async () => {
-    if (isLiked) {
-      const updatedLiked = likedBy.filter(id => id !== userGlobData.id);
-
-      const res = await fetch(UPDATE_POST_SERVICE(id), {
-        method: "PATCH",
-        body: JSON.stringify({
-          likedBy: updatedLiked,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const { data } = await res.json();
-
+    try {
+      const data = await likeUtil(
+        token,
+        likedBy,
+        userGlobData.id,
+        UPDATE_POST_SERVICE(id)
+      );
+      // Updated post with new LikedBy
       props.onLikePost(data.post);
-    }
-
-    if (!isLiked) {
-      likedBy.push(userGlobData.id);
-
-      const res = await fetch(UPDATE_POST_SERVICE(id), {
-        method: "PATCH",
-        body: JSON.stringify({
-          likedBy: likedBy,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const { data } = await res.json();
-
-      props.onLikePost(data.post);
+    } catch (error) {
+      console.error(error.message);
     }
   };
 
@@ -80,7 +67,7 @@ function Post(props) {
       <div className={classes["post-top"]}>
         <div className={classes["post-info"]}>
           <img src={user.photoUrl || user.photo} alt="avatar" />
-          <p>{user.name}</p>
+          <Link to={`/profile/${user._id}`}>{user.name}</Link>
           <p>{calcTimePassed(postedAt)}</p>
         </div>
         <img src={moreIcon} alt="more" />
@@ -106,12 +93,14 @@ function Post(props) {
             Like
           </button>
 
-          <button>
+          <button onClick={toggleCommentSection}>
             <img src={commentIcon} alt="comment" />
             Comments
           </button>
         </div>
       </div>
+
+      {commentIsOpen && <CommentSection post={id} />}
     </div>
   );
 }
