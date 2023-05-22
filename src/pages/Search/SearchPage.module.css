@@ -1,0 +1,53 @@
+.container {
+  width: 100vw;
+  /* minus nav bar height */
+  height: calc(100vh - 7rem);
+  display: flex;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 500;
+  align-self: start;
+  margin: 0;
+  margin-left: 15rem;
+  padding: 0;
+  opacity: 0.6;
+}
+
+.search-container {
+  width: 80%;
+  padding-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.not-found-msg {
+  width: 80%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.not-found-msg img {
+  width: 20rem;
+}
+
+.not-found-msg p:nth-child(2) {
+  margin: 0;
+  padding: 0;
+  font-size: 4rem;
+  font-weight: 700;
+  color: #65676b;
+}
+
+.not-found-msg p:last-child {
+  font-size: 3rem;
+  margin: 0;
+  padding: 0;
+  opacity: 0.4;
+}

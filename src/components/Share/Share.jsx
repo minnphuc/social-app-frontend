@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { POST_SERVICE } from "../../service";
+import { CREATE_POST_SERVICE } from "../../service";
 import { modalActions } from "../../store/Modal/modal-state";
 import { spinnerActions } from "../../store/Spinner/spinner-state";
 
@@ -44,7 +44,7 @@ function Share(props) {
       file !== null && formData.append("photo", currentFile.current);
       caption.length !== 0 && formData.append("caption", caption);
 
-      const res = await fetch(POST_SERVICE, {
+      const res = await fetch(CREATE_POST_SERVICE, {
         method: "POST",
         body: formData,
         headers: {

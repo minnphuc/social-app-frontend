@@ -11,12 +11,12 @@ const userState = createSlice({
       state.id = userData._id;
       state.name = userData.name;
       state.photo = userData.photoUrl || userData.photo;
+      state.followingList = userData.following;
     },
+    updateFollowingList(state, action) {
+      const newList = action.payload;
 
-    loadUserList(state, action) {
-      const userList = action.payload;
-
-      state.userList = userList;
+      state.followingList = newList;
     },
   },
 });

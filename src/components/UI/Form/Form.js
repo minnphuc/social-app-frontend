@@ -57,36 +57,48 @@ function Form(props) {
   return (
     <Backdrop>
       <form className={classes.form} onSubmit={handleSubmit(submitHandler)}>
-        <p className={classes.title}>Update your information</p>
+        <p className={classes.title}>Update information</p>
 
-        <input
-          type="text"
-          placeholder="Your city"
-          {...register("location", { required: true })}
-          defaultValue={currentData.location}
-          className={errors.location ? "invalid" : ""}
-        />
+        <div>
+          <label htmlFor="location">Location: </label>
+          <input
+            type="text"
+            placeholder="Your city"
+            {...register("location", { required: true })}
+            defaultValue={currentData.location}
+            className={errors.location ? "invalid" : ""}
+          />
+        </div>
 
-        <input
-          type="text"
-          placeholder="Your hometown"
-          {...register("hometown", { required: true })}
-          defaultValue={currentData.hometown}
-          className={errors.hometown ? "invalid" : ""}
-        />
+        <div>
+          <label htmlFor="hometown">Hometown: </label>
+          <input
+            type="text"
+            placeholder="Your hometown"
+            {...register("hometown", { required: true })}
+            defaultValue={currentData.hometown}
+            className={errors.hometown ? "invalid" : ""}
+          />
+        </div>
 
-        <input
-          type="text"
-          placeholder="Your biography"
-          {...register("biography", { required: true })}
-          defaultValue={currentData.biography}
-          className={errors.biography ? "invalid" : ""}
-        />
+        <div>
+          <label htmlFor="biography">Biography: </label>
+          <input
+            type="text"
+            placeholder="Your biography"
+            {...register("biography", { required: true })}
+            defaultValue={currentData.biography}
+            className={errors.biography ? "invalid" : ""}
+          />
+        </div>
 
-        <select {...register("relationship")}>
-          <option value="0">Single</option>
-          <option value="1">Married</option>
-        </select>
+        <div>
+          <label htmlFor="relationship">Relationship:</label>
+          <select {...register("relationship")}>
+            <option value="0">Single</option>
+            <option value="1">Married</option>
+          </select>
+        </div>
 
         <div className={classes["btn-container"]}>
           <button type="button" onClick={props.onClose} className={classes.cancel}>

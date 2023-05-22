@@ -19,7 +19,7 @@ function SignupForm(props) {
     if (data.password === data.passwordConfirm) dispatch(signupRequest(data));
     else
       dispatch(
-        modalActions.openModal({
+        modalActions.open({
           content: "Confirm password have to match the password",
           type: "error",
         })

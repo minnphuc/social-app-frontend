@@ -1,4 +1,4 @@
-import { GET_USER_BY_ID_SERVICE, GET_ALL_USER_SERVICE } from "../../service";
+import { GET_USER_BY_ID_SERVICE } from "../../service";
 import { userActions } from "./user-state";
 
 export const getGlobalUser = function () {
@@ -12,21 +12,6 @@ export const getGlobalUser = function () {
       if (!res.ok) throw new Error(data.message);
 
       dispatch(userActions.loadUserData(data.user));
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-};
-
-export const getAllUser = function () {
-  return async dispatch => {
-    try {
-      const res = await fetch(GET_ALL_USER_SERVICE);
-      const { data } = await res.json();
-
-      if (data === null) throw new Error("Error: Cannot get user list!");
-
-      dispatch(userActions.loadUserList(data.users));
     } catch (error) {
       console.error(error.message);
     }

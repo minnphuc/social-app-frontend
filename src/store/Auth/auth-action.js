@@ -7,7 +7,7 @@ import { JWT_EXPIRES_IN } from "../../config";
 
 let logoutTimerId;
 
-// ----HELPER FUNCTION----
+//? ----HELPER FUNCTION----
 
 const calcRemainingTime = expiredTime => {
   const currentTime = new Date().getTime();
@@ -57,7 +57,7 @@ const login = (dispatch, token, id) => {
   localStorage.setItem("expiredTime", expiredTime);
 };
 
-// ----THUNK----
+//? ----THUNK----
 
 export const logoutRequest = function () {
   return dispatch => {
@@ -71,9 +71,9 @@ export const logoutRequest = function () {
 
 export const loginRequest = function (email, password) {
   return async dispatch => {
-    try {
-      dispatch(spinnerActions.open());
+    dispatch(spinnerActions.open());
 
+    try {
       const res = await fetch(LOGIN_SERVICE, {
         method: "POST",
         body: JSON.stringify({ email: email, password: password }),
@@ -88,20 +88,19 @@ export const loginRequest = function (email, password) {
       const { token, user } = data;
 
       login(dispatch, token, user._id);
-
-      dispatch(spinnerActions.close());
-    } catch (err) {
-      dispatch(spinnerActions.close());
-      dispatch(modalActions.open({ content: err.message, type: "error" }));
+    } catch (error) {
+      dispatch(modalActions.open({ content: error.message, type: "error" }));
     }
+
+    dispatch(spinnerActions.close());
   };
 };
 
 export const signupRequest = function (newUser) {
   return async dispatch => {
-    try {
-      dispatch(spinnerActions.open());
+    dispatch(spinnerActions.open());
 
+    try {
       const res = await fetch(SIGNUP_SERVICE, {
         method: "POST",
         body: JSON.stringify({
@@ -120,20 +119,19 @@ export const signupRequest = function (newUser) {
 
       const { token, user } = data;
 
+      login(dispatch, token, user._id);
+
       dispatch(
         modalActions.open({
           content: "Your account has been registered successfully",
           type: "success",
         })
       );
-
-      login(dispatch, token, user._id);
-
-      dispatch(spinnerActions.close());
-    } catch (err) {
-      dispatch(spinnerActions.close());
-      dispatch(modalActions.open({ content: err.message, type: "error" }));
+    } catch (error) {
+      dispatch(modalActions.open({ content: error.message, type: "error" }));
     }
+
+    dispatch(spinnerActions.close());
   };
 };
 
