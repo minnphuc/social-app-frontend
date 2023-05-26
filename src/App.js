@@ -11,6 +11,7 @@ import SearchPage from "./pages/Search/SearchPage";
 import MessengerPage from "./pages/Messenger/MessengerPage";
 import Modal from "./components/UI/Modal/Modal";
 import SpinKit from "./components/UI/Spinkit/SpinKit";
+import ResetForm from "./components/Auth/ResetForm";
 
 import "./App.css";
 
@@ -27,22 +28,28 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate replace to="/auth" />} />
 
+        <Route path="/resetPassword/:resetToken" element={<ResetForm />} />
+
         <Route
           path="/auth"
           element={!isLogin ? <AuthPage /> : <Navigate replace to="/home" />}
         />
+
         <Route
           path="/home"
           element={isLogin ? <HomePage /> : <Navigate replace to="/auth" />}
         />
+
         <Route
           path="/profile/:id"
           element={isLogin ? <ProfilePage /> : <Navigate replace to="/auth" />}
         />
+
         <Route
           path="/search"
           element={isLogin ? <SearchPage /> : <Navigate replace to="/auth" />}
         />
+
         <Route
           path="/messenger"
           element={isLogin ? <MessengerPage /> : <Navigate replace to="/auth" />}

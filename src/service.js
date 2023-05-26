@@ -1,11 +1,16 @@
-import { BACKEND_URL } from "./config";
+import { BACKEND_URL, BACKEND_DEV_URL } from "./config";
 
-const url = `${BACKEND_URL}/api/v1/`;
+const url = `${
+  process.env.NODE_ENV === "development" ? BACKEND_DEV_URL : BACKEND_URL
+}/api/v1/`;
 
 // AUTH
 export const SIGNUP_SERVICE = `${url}users/signup`;
 export const LOGIN_SERVICE = `${url}users/login`;
-export const CHANGE_PASSWORD_SERVICE = `${url}users/change-password`;
+export const CHANGE_PASSWORD_SERVICE = `${url}users/changePassword`;
+export const FORGOT_PASSWORD_SERVICE = `${url}users/forgotPassword`;
+export const RESET_PASSWORD_SERVICE = resetToken =>
+  `${url}users/resetPassword/${resetToken}`;
 
 // USER
 export const GET_ALL_USER_SERVICE = `${url}users`;
@@ -24,6 +29,7 @@ export const GET_POST_SERVICE = `${url}posts/following`;
 
 export const GET_POST_BY_USER_SERVICE = userId => `${url}posts?user=${userId}`;
 export const UPDATE_POST_SERVICE = postId => `${url}posts/${postId}`;
+export const DELETE_POST_SERVICE = postId => `${url}posts/${postId}`;
 
 // COMMENT
 export const CREATE_COMMENT_SERVICE = `${url}comments`;

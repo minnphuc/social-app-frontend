@@ -61,6 +61,10 @@ function Feed(props) {
     setPosts(posts => [postData, ...posts]);
   };
 
+  const deletePostHandler = postId => {
+    setPosts(posts => posts.filter(post => post._id !== postId));
+  };
+
   const likePostHandler = postData =>
     setPosts(state =>
       state.map(post => {
@@ -76,7 +80,12 @@ function Feed(props) {
     );
 
   const postList = posts.map(post => (
-    <Post key={post._id} postData={post} onLikePost={likePostHandler} />
+    <Post
+      key={post._id}
+      postData={post}
+      onLikePost={likePostHandler}
+      onDeletePost={deletePostHandler}
+    />
   ));
 
   const notFoundMsg = !isProfilePage ? (

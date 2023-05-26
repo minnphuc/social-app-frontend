@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 
-import Backdrop from "../UI/Spinkit/Backdrop";
-import { CHANGE_PASSWORD_SERVICE } from "../../service";
+import ChangePasswordForm from "../Auth/ChangePasswordForm";
 import { logoutRequest } from "../../store/Auth/auth-action";
 import { getGlobalUser } from "../../store/User/user-action";
-import { modalActions } from "../../store/Modal/modal-state";
 
 import classes from "./NavBar.module.css";
 import searchIcon from "../../icons/search.svg";
@@ -16,18 +13,11 @@ import chatIcon from "../../icons/chat.svg";
 import notifIcon from "../../icons/notifications.svg";
 import logoutIcon from "../../icons/logout.svg";
 import passwordIcon from "../../icons/password.svg";
-import closeIcon from "../../icons/close.svg";
 
 function NavBar() {
   const userGlobData = useSelector(state => state.user);
-  const { token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
 
   const [dropdownUser, setDropdownUser] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -59,90 +49,10 @@ function NavBar() {
     setIsOpen(false);
   };
 
-  const submitHandler = data => {
-    const password = data.password;
-    const newPassword = data.newPassword;
-    const newPasswordConfirm = data.newPasswordConfirm;
-
-    if (newPassword !== newPasswordConfirm) {
-      dispatch(
-        modalActions.open({
-          content: "Confirm password have to match the password",
-          type: "error",
-        })
-      );
-      return;
-    }
-
-    const updatePassword = async () => {
-      try {
-        const res = await fetch(CHANGE_PASSWORD_SERVICE, {
-          method: "POST",
-          body: JSON.stringify({
-            password,
-            newPassword,
-          }),
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        const { data } = await res.json();
-
-        if (!res.ok) throw new Error(data.message);
-
-        dispatch(
-          modalActions.open({
-            content: data.message,
-            type: "success",
-          })
-        );
-        dispatch(logoutRequest());
-      } catch (error) {
-        dispatch(modalActions.open({ content: error.message, type: "error" }));
-        console.error(error.message);
-      }
-    };
-
-    updatePassword();
-  };
-
-  const passwordChangeForm = (
-    <Backdrop>
-      <form className={classes.form} onSubmit={handleSubmit(submitHandler)}>
-        <p className={classes.title}>Change password</p>
-        <img src={closeIcon} alt="close" onClick={closeFormHandler} />
-
-        <input
-          type="password"
-          placeholder="Your current password"
-          {...register("password", { required: true })}
-          className={errors.location ? "invalid" : ""}
-        />
-
-        <input
-          type="password"
-          placeholder="New password"
-          {...register("newPassword", { required: true })}
-          className={errors.location ? "invalid" : ""}
-        />
-
-        <input
-          type="password"
-          placeholder="Confirm new password"
-          {...register("newPasswordConfirm", { required: true })}
-          className={errors.location ? "invalid" : ""}
-        />
-
-        <button>Change password</button>
-      </form>
-    </Backdrop>
-  );
-
   return (
     <>
-      {isOpen && passwordChangeForm}
+      {isOpen && <ChangePasswordForm onClose={closeFormHandler} />}
+
       <nav className={classes["nav-bar"]}>
         <Link to="/home" className={classes.logo}>
           fakebook

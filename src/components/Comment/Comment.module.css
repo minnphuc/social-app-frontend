@@ -1,11 +1,11 @@
 .comment {
   width: 90%;
   height: max-content;
-  background-color: var(--white);
+  background-color: #f5f5f5;
   border: none;
   border-radius: 1rem;
   padding: 1.2rem 1.3rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
   position: relative;
   box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
 }
@@ -79,7 +79,7 @@
 .content {
   margin-top: 1rem;
   font-size: 1.6rem;
-  color: var(--grayish-blue);
+  color: black;
 }
 
 /* Reply Comment */
@@ -87,11 +87,11 @@
 .reply_comment {
   width: 85%;
   height: max-content;
-  background-color: var(--white);
+  background-color: #f5f5f5;
   border: none;
   border-radius: 1rem;
   padding: 1.4rem 1.3rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-left: 2rem;
   position: relative;
   transition: all 200ms ease;
