@@ -17,7 +17,6 @@ function OnlineFriend(props) {
       let conversation;
 
       // Get conversation with this user
-
       const res = await fetch(GET_CONVERSATION(id), {
         method: "GET",
         headers: {
@@ -26,12 +25,12 @@ function OnlineFriend(props) {
         },
       });
       const { data } = await res.json();
-      if (!res.ok) throw new Error(data.message);
+
+      if (!res.ok && res.status !== 404) throw new Error(data.message);
 
       conversation = data.conversation;
 
       // If conversation doesn't exist, create one
-
       if (!data.conversation) {
         const res = await fetch(CREATE_CONVERSATION_SERVICE, {
           method: "POST",

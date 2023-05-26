@@ -39,7 +39,10 @@ function LoginForm(props) {
       <button type="submit" className={classes.login}>
         Log In
       </button>
-      <span>Or</span>
+
+      <span onClick={props.onForgotPassword}>Forgotten password?</span>
+      <hr />
+
       <button type="button" className={classes.signup} onClick={props.onToggle}>
         Create a new account
       </button>

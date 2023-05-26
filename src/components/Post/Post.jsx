@@ -1,26 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import CommentSection from "../Comment/CommentSection";
-import { UPDATE_POST_SERVICE, COUNT_COMMENTS_OF_POST } from "../../service";
+import {
+  UPDATE_POST_SERVICE,
+  COUNT_COMMENTS_OF_POST,
+  DELETE_POST_SERVICE,
+} from "../../service";
 import calcTimePassed from "../../utils/calcTimePassed";
 import likeUtil from "../../utils/likeUtils";
+import { modalActions } from "../../store/Modal/modal-state";
+import { spinnerActions } from "../../store/Spinner/spinner-state";
 
 import moreIcon from "../../icons/more.svg";
 import likeIcon from "../../icons/like.svg";
 import likeCountIcon from "../../icons/like_count.svg";
 import likeFilledIcon from "../../icons/like_filled.svg";
 import commentIcon from "../../icons/comment.svg";
+import trashIcon from "../../icons/trash.svg";
 
 import classes from "./Post.module.css";
 
 function Post(props) {
   const userGlobData = useSelector(state => state.user);
   const { token } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   const [commentIsOpen, setCommentIsOpen] = useState(false);
   const [commentCount, setCommentCount] = useState();
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const { _id: id, user, caption, photoUrl, postedAt, likedBy } = props.postData;
 
@@ -47,6 +56,10 @@ function Post(props) {
     setCommentIsOpen(state => !state);
   };
 
+  const toggleDropdown = () => {
+    if (user._id === userGlobData.id) setShowDropdown(state => !state);
+  };
+
   const likeHandler = async () => {
     try {
       const data = await likeUtil(
@@ -62,6 +75,31 @@ function Post(props) {
     }
   };
 
+  const deleteHandler = async () => {
+    try {
+      dispatch(spinnerActions.open());
+
+      const res = await fetch(DELETE_POST_SERVICE(id), {
+        method: "DELETE",
+      });
+      if (res.status === 204) {
+        dispatch(
+          modalActions.open({ content: "Delete post successfully.", type: "success" })
+        );
+        dispatch(spinnerActions.close());
+        props.onDeletePost(id);
+      } else throw new Error();
+    } catch (error) {
+      dispatch(spinnerActions.close());
+      dispatch(
+        modalActions.open({
+          content: "Cannot delete post. Please try again later.",
+          type: "error",
+        })
+      );
+    }
+  };
+
   return (
     <div className={classes.post}>
       <div className={classes["post-top"]}>
@@ -70,7 +108,19 @@ function Post(props) {
           <Link to={`/profile/${user._id}`}>{user.name}</Link>
           <p>{calcTimePassed(postedAt)}</p>
         </div>
-        <img src={moreIcon} alt="more" />
+
+        <div className={classes["dropdown-icon"]} onClick={toggleDropdown}>
+          <img src={moreIcon} alt="more" />
+
+          {showDropdown && (
+            <div onClick={deleteHandler} className={classes.dropdown}>
+              <div>
+                <img src={trashIcon} alt="delete" />
+                Delete post
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={classes["post-center"]}>

@@ -9,6 +9,7 @@ import {
 } from "../../service";
 import { spinnerActions } from "../../store/Spinner/spinner-state";
 import { modalActions } from "../../store/Modal/modal-state";
+import { BACKEND_URL, BACKEND_DEV_URL } from "../../config";
 
 import NavBar from "../../components/Navigation/NavBar";
 import RightBar from "../../components/RightBar/RightBar";
@@ -37,13 +38,13 @@ function MessengerPage() {
   //? SOCKET MANAGE
 
   useEffect(() => {
-    // socket.current = io("ws://127.0.0.1:3000");
-    socket.current = io("https://socialapp-backend-production.up.railway.app");
+    const backendUrl =
+      process.env.NODE_ENV === "development" ? BACKEND_DEV_URL : BACKEND_URL;
+    socket.current = io(backendUrl);
 
     // Online users
     socket.current?.on("getUsers", users => {
       setOnlineUsers(users);
-      // console.log(users);
     });
 
     // Arrival message
