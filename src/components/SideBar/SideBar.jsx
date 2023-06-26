@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import RecommendUser from "./RecommendUser";
 
@@ -14,6 +15,10 @@ import courseIcon from "../../icons/job.svg";
 import classes from "./SideBar.module.css";
 
 function SideBar() {
+  const navigate = useNavigate();
+
+  const openChat = () => navigate("/messenger");
+
   return (
     <div className={classes.sidebar}>
       <ul className={classes["sidebar-list"]}>
@@ -22,7 +27,7 @@ function SideBar() {
           Feed
         </li>
 
-        <li>
+        <li onClick={openChat}>
           <img src={chatIcon} alt="chat" />
           Chat
         </li>
